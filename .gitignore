@@ -1,0 +1,16 @@
+# Python
+*.pyc
+*.pyo
+__pycache__/
+
+# Virtual Environment
+venv/
+
+# Jupyter Notebooks checkpoints
+.ipynb_checkpoints/
+
+# Flask Upload Folder
+uploads/
+
+# Other log files
+*.log
