@@ -1,9 +1,9 @@
 import pytest
 from io import BytesIO
 from flask import Flask
-from main import app  # assuming your Flask app is in 'main.py'
+from main import app  # Assuming your Flask app is in 'main.py'
 import warnings
-
+import os
 
 # Suppress FutureWarning related to torch.load
 warnings.filterwarnings("ignore", category=FutureWarning, message=".*weights_only=False.*")
@@ -16,8 +16,13 @@ def client():
 
 # Test to upload an audio file and check transcription
 def test_upload_audio(client):
+    # Check if the audio file exists
+    audio_file_path = 'audio/perro-come.mp4'
+    if not os.path.exists(audio_file_path):
+        pytest.fail(f"Test audio file {audio_file_path} does not exist")
+
     # Open the real audio file (audio/perro-come.mp4)
-    with open('audio/perro-come.mp4', 'rb') as audio_file:
+    with open(audio_file_path, 'rb') as audio_file:
         audio_data = BytesIO(audio_file.read())  # Read the file as a byte stream
         audio_data.seek(0)  # Reset pointer to the start of the file
 
