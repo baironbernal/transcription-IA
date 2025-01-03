@@ -2,7 +2,7 @@ import pytest
 import os
 from io import BytesIO
 from flask import Flask
-from main import app  # assuming your Flask app is in 'app.py'
+from main import app  # assuming your Flask app is in 'main.py'
 
 # Test for uploading audio
 @pytest.fixture
@@ -12,13 +12,14 @@ def client():
 
 # Test to upload an audio file and check transcription
 def test_upload_audio(client):
-    # Create a dummy audio file (for testing purposes)
-    audio_data = BytesIO(b"dummy audio data")
-    audio_data.seek(0)  # Reset pointer to the start of the file
+    # Open the real audio file (audio/perro-come.mp4)
+    with open('audio/perro-come.mp4', 'rb') as audio_file:
+        audio_data = BytesIO(audio_file.read())  # Read the file as a byte stream
+        audio_data.seek(0)  # Reset pointer to the start of the file
 
     # Prepare the file to send
     data = {
-        'file': (audio_data, 'test_audio.mp3')
+        'file': (audio_data, 'perro-come.mp4')
     }
 
     # Simulate the POST request to upload the audio file
@@ -27,7 +28,7 @@ def test_upload_audio(client):
     # Check if the response is a 200 OK and contains the transcription field
     assert response.status_code == 200
     response_json = response.get_json()
-    
+
     # If the file is processed correctly, we expect a transcription field in the response
     assert 'transcription' in response_json
 
@@ -43,4 +44,3 @@ def test_upload_empty_file(client):
     response = client.post('/upload-audio', content_type='multipart/form-data', data=data)
     assert response.status_code == 400
     assert response.get_json()['error'] == 'No selected file'
-
