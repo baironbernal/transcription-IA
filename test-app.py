@@ -1,8 +1,12 @@
 import pytest
-import os
 from io import BytesIO
 from flask import Flask
 from main import app  # assuming your Flask app is in 'main.py'
+import warnings
+
+
+# Suppress FutureWarning related to torch.load
+warnings.filterwarnings("ignore", category=FutureWarning, message=".*weights_only=False.*")
 
 # Test for uploading audio
 @pytest.fixture
