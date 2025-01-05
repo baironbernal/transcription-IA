@@ -2,11 +2,15 @@ from flask import Flask, request, jsonify
 import whisper
 import ffmpeg
 import os
+import torch
+
 
 app = Flask(__name__)
 
 # Initialize Whisper model
-model = whisper.load_model("base")
+model_path = whisper.download_model("base")  # Download the model if necessary
+model = torch.load(model_path, weights_only=True)
+
 
 # Create directory for temporary files
 UPLOAD_FOLDER = "uploads"
@@ -38,6 +42,7 @@ def upload_audio():
 
         # Use Whisper AI to transcribe the audio
         result = model.transcribe(wav_filepath)
+        
         transcription = result["text"]
 
         # Clean up temporary files
